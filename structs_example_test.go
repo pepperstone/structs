@@ -43,7 +43,7 @@ func ExampleMap() {
 		Enabled: true,
 	}
 
-	m := Map(s)
+	m := Map(s, "")
 
 	fmt.Printf("%#v\n", m["Name"])
 	fmt.Printf("%#v\n", m["ID"])
@@ -68,7 +68,7 @@ func ExampleMap_tags() {
 		ID:   789012,
 	}
 
-	m := Map(s)
+	m := Map(s, "")
 
 	// access them by the custom tags defined above
 	fmt.Printf("%#v\n", m["server_name"])
@@ -99,7 +99,7 @@ func ExampleMap_omitNested() {
 		Time: t,
 	}
 
-	m := Map(s)
+	m := Map(s, "")
 
 	// access them by the custom tags defined above
 	fmt.Printf("%v\n", m["server_name"])
@@ -125,7 +125,7 @@ func ExampleMap_omitEmpty() {
 		Location: "Tokyo",
 	}
 
-	m := Map(s)
+	m := Map(s, "")
 
 	// map contains only the Location field
 	fmt.Printf("%v\n", m)

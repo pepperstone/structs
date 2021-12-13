@@ -18,7 +18,7 @@ func TestMapNonStruct(t *testing.T) {
 	}()
 
 	// this should panic. We are going to recover and and test it
-	_ = Map(foo)
+	_ = Map(foo, "")
 }
 
 func TestStructIndexes(t *testing.T) {
@@ -36,7 +36,7 @@ func TestStructIndexes(t *testing.T) {
 	}()
 
 	// They should not panic
-	_ = Map(&C{})
+	_ = Map(&C{}, "")
 	_ = Fields(&C{})
 	_ = Values(&C{})
 	_ = IsZero(&C{})
@@ -54,7 +54,7 @@ func TestMap(t *testing.T) {
 		C: true,
 	}
 
-	a := Map(T)
+	a := Map(T, "")
 
 	if typ := reflect.TypeOf(a).Kind(); typ != reflect.Map {
 		t.Errorf("Map should return a map type, got: %v", typ)
@@ -94,7 +94,7 @@ func TestMap_Tag(t *testing.T) {
 		C: true,
 	}
 
-	a := Map(T)
+	a := Map(T, "")
 
 	inMap := func(key interface{}) bool {
 		for k := range a {
@@ -197,7 +197,7 @@ func TestMap_OmitEmpty(t *testing.T) {
 	}
 	a := A{}
 
-	m := Map(a)
+	m := Map(a, "")
 
 	_, ok := m["Value"].(map[string]interface{})
 	if ok {
@@ -224,7 +224,7 @@ func TestMap_OmitNested(t *testing.T) {
 	}
 	b := &B{A: a}
 
-	m := Map(b)
+	m := Map(b, "")
 
 	in, ok := m["A"].(map[string]interface{})
 	if !ok {
@@ -252,7 +252,7 @@ func TestMap_Nested(t *testing.T) {
 	}
 	b := &B{A: a}
 
-	m := Map(b)
+	m := Map(b, "")
 
 	if typ := reflect.TypeOf(m).Kind(); typ != reflect.Map {
 		t.Errorf("Map should return a map type, got: %v", typ)
@@ -285,7 +285,7 @@ func TestMap_NestedMapWithStructValues(t *testing.T) {
 		},
 	}
 
-	m := Map(b)
+	m := Map(b, "")
 
 	if typ := reflect.TypeOf(m).Kind(); typ != reflect.Map {
 		t.Errorf("Map should return a map type, got: %v", typ)
@@ -319,7 +319,7 @@ func TestMap_NestedMapWithStringValues(t *testing.T) {
 
 	a := &A{B: b}
 
-	m := Map(a)
+	m := Map(a, "")
 
 	if typ := reflect.TypeOf(m).Kind(); typ != reflect.Map {
 		t.Errorf("Map should return a map type, got: %v", typ)
@@ -352,7 +352,7 @@ func TestMap_NestedMapWithInterfaceValues(t *testing.T) {
 
 	a := &A{B: b}
 
-	m := Map(a)
+	m := Map(a, "")
 
 	if typ := reflect.TypeOf(m).Kind(); typ != reflect.Map {
 		t.Errorf("Map should return a map type, got: %v", typ)
@@ -386,7 +386,7 @@ func TestMap_NestedMapWithSliceIntValues(t *testing.T) {
 
 	a := &A{B: b}
 
-	m := Map(a)
+	m := Map(a, "")
 
 	if typ := reflect.TypeOf(m).Kind(); typ != reflect.Map {
 		t.Errorf("Map should return a map type, got: %v", typ)
@@ -425,7 +425,7 @@ func TestMap_NestedMapWithSliceStructValues(t *testing.T) {
 	}
 
 	a := &A{B: b}
-	m := Map(a)
+	m := Map(a, "")
 
 	if typ := reflect.TypeOf(m).Kind(); typ != reflect.Map {
 		t.Errorf("Map should return a map type, got: %v", typ)
@@ -467,7 +467,7 @@ func TestMap_NestedSliceWithStructValues(t *testing.T) {
 			{Country: "Italy"},
 		},
 	}
-	mp := Map(p)
+	mp := Map(p, "")
 
 	mpAddresses := mp["addresses"].([]interface{})
 	if _, exists := mpAddresses[0].(map[string]interface{})["Country"]; exists {
@@ -496,7 +496,7 @@ func TestMap_NestedSliceWithPointerOfStructValues(t *testing.T) {
 			{Country: "Italy"},
 		},
 	}
-	mp := Map(p)
+	mp := Map(p, "")
 
 	mpAddresses := mp["addresses"].([]interface{})
 	if _, exists := mpAddresses[0].(map[string]interface{})["Country"]; exists {
@@ -518,7 +518,7 @@ func TestMap_NestedSliceWithIntValues(t *testing.T) {
 		Name:  "test",
 		Ports: []int{80},
 	}
-	m := Map(p)
+	m := Map(p, "")
 
 	ports, ok := m["ports"].([]int)
 	if !ok {
@@ -542,7 +542,7 @@ func TestMap_Anonymous(t *testing.T) {
 	b := &B{}
 	b.A = a
 
-	m := Map(b)
+	m := Map(b, "")
 
 	if typ := reflect.TypeOf(m).Kind(); typ != reflect.Map {
 		t.Errorf("Map should return a map type, got: %v", typ)
@@ -571,7 +571,7 @@ func TestMap_Flatnested(t *testing.T) {
 	b := &B{C: 123}
 	b.A = a
 
-	m := Map(b)
+	m := Map(b, "")
 
 	_, ok := m["A"].(map[string]interface{})
 	if ok {
@@ -599,7 +599,7 @@ func TestMap_FlatnestedOverwrite(t *testing.T) {
 	b := &B{C: 123, Name: "bName"}
 	b.A = a
 
-	m := Map(b)
+	m := Map(b, "")
 
 	_, ok := m["A"].(map[string]interface{})
 	if ok {
@@ -618,7 +618,7 @@ func TestMap_TimeField(t *testing.T) {
 	}
 
 	a := &A{CreatedAt: time.Now().UTC()}
-	m := Map(a)
+	m := Map(a, "")
 
 	_, ok := m["CreatedAt"].(time.Time)
 	if !ok {
@@ -1279,9 +1279,9 @@ func TestNestedNilPointer(t *testing.T) {
 		}
 	}()
 
-	_ = Map(person)                  // Panics
-	_ = Map(personWithDog)           // Panics
-	_ = Map(personWithDogWithCollar) // Doesn't panic
+	_ = Map(person, "")                  // Panics
+	_ = Map(personWithDog, "")           // Panics
+	_ = Map(personWithDogWithCollar, "") // Doesn't panic
 }
 
 func TestSetValueOnNestedField(t *testing.T) {
@@ -1400,7 +1400,7 @@ func TestMap_InterfaceValue(t *testing.T) {
 	expected := []byte("test value")
 
 	a := TestStruct{A: expected}
-	s := Map(a)
+	s := Map(a, "")
 	if !reflect.DeepEqual(s["A"], expected) {
 		t.Errorf("Value does not match expected: %q != %q", s["A"], expected)
 	}
@@ -1418,13 +1418,13 @@ func TestPointer2Pointer(t *testing.T) {
 		Name: "Fluff",
 		Age:  4,
 	}
-	_ = Map(&a)
+	_ = Map(&a, "")
 
 	b := &a
-	_ = Map(&b)
+	_ = Map(&b, "")
 
 	c := &b
-	_ = Map(&c)
+	_ = Map(&c, "")
 }
 
 func TestMap_InterfaceTypeWithMapValue(t *testing.T) {
@@ -1449,5 +1449,5 @@ func TestMap_InterfaceTypeWithMapValue(t *testing.T) {
 		}
 	}()
 
-	_ = Map(a)
+	_ = Map(a, "")
 }

@@ -24,11 +24,20 @@ type Struct struct {
 
 // New returns a new *Struct with the struct s. It panics if the s's kind is
 // not struct.
-func New(s interface{}) *Struct {
+func New(s interface{}, tags ...string) *Struct {
+	var (
+		tagName = DefaultTagName
+	)
+	{
+		if len(tags) > 0 {
+			tagName = tags[0]
+		}
+	}
+
 	return &Struct{
 		raw:     s,
 		value:   strctVal(s),
-		TagName: DefaultTagName,
+		TagName: tagName,
 	}
 }
 
@@ -442,8 +451,8 @@ func strctVal(s interface{}) reflect.Value {
 
 // Map converts the given struct to a map[string]interface{}. For more info
 // refer to Struct types Map() method. It panics if s's kind is not struct.
-func Map(s interface{}) map[string]interface{} {
-	return New(s).Map()
+func Map(s interface{}, tag string) map[string]interface{} {
+	return New(s, tag).Map()
 }
 
 // FillMap is the same as Map. Instead of returning the output, it fills the
