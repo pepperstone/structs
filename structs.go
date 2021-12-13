@@ -3,6 +3,7 @@ package structs
 
 import (
 	"fmt"
+	"strings"
 
 	"reflect"
 )
@@ -30,7 +31,8 @@ func New(s interface{}, tags ...string) *Struct {
 	)
 	{
 		if len(tags) > 0 {
-			tagName = tags[0]
+
+			tagName = strings.Split(tags[0], ",")[0]
 		}
 	}
 
