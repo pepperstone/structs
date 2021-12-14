@@ -121,7 +121,7 @@ func (s *Struct) FillMap(out map[string]interface{}) {
 			zero := reflect.Zero(val.Type()).Interface()
 			current := val.Interface()
 
-			if reflect.DeepEqual(current, zero) {
+			if reflect.DeepEqual(current, zero) && val.Kind() != reflect.Bool {
 				continue
 			}
 		}
