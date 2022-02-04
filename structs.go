@@ -91,13 +91,13 @@ func New(s interface{}, tags ...string) *Struct {
 // fields will be neglected.
 func (s *Struct) Map() map[string]interface{} {
 	out := make(map[string]interface{})
-	s.FillMap(out)
+	s.FillMap(out, false)
 	return out
 }
 
 // FillMap is the same as Map. Instead of returning the output, it fills the
 // given map.
-func (s *Struct) FillMap(out map[string]interface{}) {
+func (s *Struct) FillMap(out map[string]interface{}, includeEmpty bool) {
 	if out == nil {
 		return
 	}
@@ -121,7 +121,7 @@ func (s *Struct) FillMap(out map[string]interface{}) {
 			zero := reflect.Zero(val.Type()).Interface()
 			current := val.Interface()
 
-			if reflect.DeepEqual(current, zero) && val.Kind() != reflect.Bool {
+			if reflect.DeepEqual(current, zero) && val.Kind() != reflect.Bool && !includeEmpty {
 				continue
 			}
 		}
@@ -460,7 +460,7 @@ func Map(s interface{}, tag string) map[string]interface{} {
 // FillMap is the same as Map. Instead of returning the output, it fills the
 // given map.
 func FillMap(s interface{}, out map[string]interface{}) {
-	New(s).FillMap(out)
+	New(s).FillMap(out, false)
 }
 
 // Values converts the given struct to a []interface{}. For more info refer to
